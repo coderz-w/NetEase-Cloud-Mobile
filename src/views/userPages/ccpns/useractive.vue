@@ -21,27 +21,31 @@
             </div>
           </template>
           <div>
-            <i class="iconfont icon-fenxiang"></i
-            ><i class="iconfont icon-pinglun"></i
-            ><i class="iconfont icon-dianzan"></i>
+            <i class="iconfont icon-fenxiang"><span>分享</span></i
+            ><i class="iconfont icon-pinglun" @click="comment(item)"><span>{{ item.commentCount>0?item.likedCount:'评论' }}</span></i
+            ><i class="iconfont icon-dianzan" :style="`color: ${item.liked ? 'red' : '#808080'}`" @click="dz(item)"><span>{{ item.likedCount>0?item.likedCount:'' }}</span></i>
           </div>
         </div>
       </div>
+      <div class="send" v-show="show"><div class="inner"><input type="text" class="nr" v-model="talk"></div><div class="but" @click="send">发送</div></div>
     </template>
   </div>
 </template>
 
 <script setup>
-import { getactive } from "@/services/request/test.js";
+import { getactive ,likeactive,commentactive} from "@/services/request/test.js";
 import { useUserStore } from "@/stores/userdata.js";
 import formatTime from "@/utils/timetonow.js";
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
+import { nextTick, ref } from "vue";
 let userstore = useUserStore();
 let { id, cookie, nickname, avatarUrl } = storeToRefs(userstore);
 let list = ref([]);
 let more = ref(false);
 let res = "";
+let currentcomment=ref('')
+let talk=ref('')
+let show=ref(false)
 async function loadactive() {
   res = await getactive(id.value, cookie.value);
   console.log(res);
@@ -51,9 +55,41 @@ async function loadactive() {
       eventTime: formatTime(event.eventTime),
       data: event.json,
       pics: event.pics,
+      liked:event.info.liked,
+      likedCount:event.info.likedCount,
+      actId:event.threadId,
+      commentCount:event.info.commentCount
     };
   });
   console.log(list.value);
+}
+async function dz(item){
+item.liked=!item.liked
+if(item.liked){
+  item.likedCount++
+  let res=await likeactive(item.actId,1,cookie.value)
+  console.log(res)
+}
+else{
+  item.likedCount--
+  let res=await likeactive(item.actId,0,cookie.value)
+  console.log(res)
+}
+}
+async function comment(item){
+nextTick(()=>{
+  show.value = !show.value;
+  currentcomment.value=item.actId
+})
+}
+async function send(){
+  if(talk.value!=''){
+  let res=await commentactive(talk.value,currentcomment.value,cookie.value)
+  console.log(res)
+  nextTick(()=>{
+    show.value = !show.value;
+  })
+  }
 }
 loadactive();
 </script>
@@ -109,12 +145,21 @@ loadactive();
       }
       div {
         display: flex;
+        position: relative;
         margin-top: 6vh;
         width: 45vw;
+        left: -5vw;
         align-items: center;
         justify-content: space-around;
         .iconfont {
           font-size: 18px;
+          span {
+            position: relative;
+            left: 2px;
+            top: -2px;
+            color: #808080;
+            font-size: 12px;
+          }
         }
       }
     }
@@ -192,6 +237,41 @@ loadactive();
   justify-content: center;
   .talkimg {
     position: relative;
+  }
+}
+.send {
+  display: flex;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 5vh;
+  padding-top: 1vh;
+  border-top-left-radius: 2vh;
+  border-top-right-radius: 2vh;
+  background-color: #808080;
+  .inner {
+    display: flex;
+    width: 80%;
+    height: 90%;
+    justify-content: center;
+    align-items: center;
+    input {
+      padding-left: 5%;
+      width: 90%;
+      height: 100%;
+      border-radius: 5vh;
+    }
+  }
+  .but {
+    width: 20%;
+    height: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f5;
+    border-radius: 3vh;
+    font-size: 16px;
   }
 }
 </style>

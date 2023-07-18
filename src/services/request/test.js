@@ -72,3 +72,13 @@ export function getactive(id,cookie){
         url: `/user/event?uid=${id}&cookie=${cookie}`
     })
 }
+export function likeactive(id,t,cookie){
+return request.get({
+    url:`/resource/like?threadId=${id}&t=${t}&cookie=${cookie}&type=6`
+})
+}
+export function commentactive(test,id,cookie){
+    return request.get({
+        url:`/comment?t=1&type=6&threadId=${id}&content=${test}&cookie=${cookie}`
+    })
+}

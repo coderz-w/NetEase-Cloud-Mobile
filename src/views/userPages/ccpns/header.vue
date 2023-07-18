@@ -27,5 +27,6 @@ function back(){
 }
 #icon {
     font-size: 30px;
+    z-index: 9;
 }
 </style>

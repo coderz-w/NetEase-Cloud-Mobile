@@ -260,6 +260,7 @@ let bgpic=computed(()=>{
   }
 }
 .bgpic {
+  z-index: -100;
   width: 100%;
   filter: blur(30px);
 }

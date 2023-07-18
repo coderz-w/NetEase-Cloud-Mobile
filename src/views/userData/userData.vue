@@ -22,7 +22,7 @@
       <div class="item">
         <div class="lf">性别</div>
         <div class="r">
-          <select name="sex" id="" @change="changesex($event)" :value="gender">
+          <select name="sex" id="" @change="changesex($event)" v-model="gender">
             <option value="1">男</option>
             <option value="2">女</option>
           </select>
