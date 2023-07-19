@@ -2,7 +2,7 @@
 
 
 ## 技术栈
-vue3 + pina + pinia-plugin-persist+ vue-router + vite + axios + less
+vue3 +js + pina + pinia-plugin-persist+ vue-router + vite + axios + less
 
 
 ## 实现功能
