@@ -27,7 +27,7 @@
           </div>
         </div>
       </div>
-      <div class="send" v-show="show"><div class="inner"><input type="text" class="nr" v-model="talk"></div><div class="but" @click="send">发送</div></div>
+      <div class="send" v-show="show"><div class="inner"><input type="text" class="nr" v-model="talk"></div><div class="but" @click="sendDebounced">发送</div></div>
     </template>
   </div>
 </template>
@@ -36,6 +36,7 @@
 import { getactive ,likeactive,commentactive} from "@/services/request/test.js";
 import { useUserStore } from "@/stores/userdata.js";
 import formatTime from "@/utils/timetonow.js";
+import {debounce} from '@/utils/debounce.js'
 import { storeToRefs } from "pinia";
 import { nextTick, ref } from "vue";
 let userstore = useUserStore();
@@ -83,14 +84,16 @@ nextTick(()=>{
 })
 }
 async function send(){
-  if(talk.value!=''){
+  if(talk.value!==''){
   let res=await commentactive(talk.value,currentcomment.value,cookie.value)
   console.log(res)
   nextTick(()=>{
     show.value = !show.value;
+    currentcomment.value=''
   })
   }
 }
+const sendDebounced = debounce(send, 1000);
 loadactive();
 </script>
 

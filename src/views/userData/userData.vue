@@ -16,7 +16,7 @@
       <div class="item">
         <div class="lf">昵称</div>
         <div class="r">
-          <input type="text" :value="nickname" class="nc" @change="changen" />
+          <input type="text" :value="nickname" class="nc" @change="dechangen($event)" />
         </div>
       </div>
       <div class="item">
@@ -66,7 +66,7 @@
             :value="signature"
             placeholder="还没有简介"
             class="descrition"
-            @change="changej($event)"
+            @change="dechangej($event)"
           />
         </div>
       </div>
@@ -93,6 +93,7 @@
 <script setup>
 import headervue from "./ccpns/headervue.vue";
 import { useUserStore } from "@/stores/userdata.js";
+import {debounces} from "@/utils/debounce.js"
 import { computed, ref } from "vue";
 import axios from "axios";
 import { storeToRefs } from "pinia";
@@ -143,10 +144,12 @@ async function changen(e) {
   i = e.target.value;
   let res=await submitnickname(i,cookie.value)
 }
+let dechangen=debounces(changen,500)
 async function changej(e) {
   s = e.target.value;
   let res=await submitsignature(e.target.value,cookie.value)
 }
+let dechangej=debounces(changej,500)
 async function tchange(e) {
   let file = await e.target.files[0];
   console.log(file);

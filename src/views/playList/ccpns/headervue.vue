@@ -9,6 +9,8 @@
     <script setup>
     import router from '../../../router';
     function back(){
+        let audio=document.querySelector('audio')
+        audio.style.display='none'
         router.back()
     }
     

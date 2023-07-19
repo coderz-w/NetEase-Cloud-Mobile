@@ -48,7 +48,7 @@
       </div>
       <!-- 歌曲列表 -->
       <div class="mianlist">
-        <div class="tem" v-for="(item, index) in songs" :key="item.name">
+        <div class="tem" v-for="(item, index) in songs" :key="item.name" @click="deplay(item)">
           <div class="num">{{ index + 1 }}</div>
           <div class="listm">
             <h4>{{ item.name }}</h4>
@@ -71,12 +71,13 @@ import { computed, reactive, ref, withDirectives } from "vue";
 import { getSonglistDetail, getlistAll } from "@/services/request/test.js";
 import { useUserStore } from "@/stores/userdata.js";
 import { storeToRefs } from "pinia";
+import {debounces} from '@/utils/debounce.js'
 let current = 0;
 let id = ref();
 let data = reactive({});
 let songs = ref([]);
 let userstore = useUserStore();
-let { cookie } = storeToRefs(userstore);
+let { cookie ,currentsong} = storeToRefs(userstore);
 id = router.currentRoute.value.params.id;
 async function getdata() {
   let res = await getSonglistDetail(id, cookie.value);
@@ -109,6 +110,26 @@ function handleScroll() {
     window.removeEventListener("scroll", handleScroll);
   }
 }
+function play(item){
+  let audio=document.querySelector('audio')
+  audio.style.display='block'
+  if(currentsong.value!==item.id){
+  audio.src = `https://music.163.com/song/media/outer/url?id=${item.id}.mp3`;
+  audio.playbackRate=1
+  audio.play()
+  }
+  else{
+    if(audio.paused){
+      audio.playbackRate=1
+      audio.play()
+    }
+    else{
+      audio.pause()
+    }
+  }
+ userstore.currentsong=item.id
+}
+let deplay=debounces(play,500)
 </script>
 
 <style lang="less" scoped>

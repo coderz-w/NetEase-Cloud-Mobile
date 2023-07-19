@@ -37,7 +37,7 @@ import toyear from "@/utils/timetoday.js"
 import getDaysFromNow from "@/utils/timetoday.js";
 let Msg = ref([]);
 const userstore = useUserStore();
-let { id, cookie, listenSongsn,birthday,signature,gender} = storeToRefs(userstore);
+let { id, cookie, listenSongs,birthday,signature,gender} = storeToRefs(userstore);
 async function getdata() {
   let res = await getUserSonglist(id.value, cookie.value);
   Msg.value = [];

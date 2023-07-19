@@ -19,7 +19,8 @@ export const useUserStore = defineStore("user",{
       birthday:'',
       gender:'',
       signature:'',
-      createDays:''
+      createDays:'',
+      currentsong:''
   }),
   persist: true,
   actions: {
